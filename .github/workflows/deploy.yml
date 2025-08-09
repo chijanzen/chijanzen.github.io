@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Deploy (Debug)
 
 on:
   push:
@@ -13,15 +13,39 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Debug: 查看替換前的 index.html 內容
+      # Debug 1: 查看替換前的 index.html
       - name: Debug before replace
         run: |
-          echo "===== Before Replace ====="
+          echo "===== BEFORE REPLACE ====="
           grep "maps.googleapis.com/maps/api/js" index.html || echo "No Google Maps script found"
           echo "=========================="
-- name: Debug secret length
-  run: |
-    echo "MAPS_API_KEY length: ${#MAPS_API_KEY}"
-  env:
-    MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+
+      # Debug 2: 檢查 Secret 是否讀到
+      - name: Debug secret length
+        run: |
+          if [ -z "$MAPS_API_KEY" ]; then
+            echo "❌ MAPS_API_KEY is empty or not set!"
+          else
+            echo "✅ MAPS_API_KEY length: ${#MAPS_API_KEY}"
+          fi
+        env:
+          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+
       # 替換 API Key
+      - name: Replace API Key in HTML
+        run: |
+          sed -i "s|__MAPS_API_KEY__|${{ secrets.MAPS_API_KEY }}|g" index.html
+
+      # Debug 3: 查看替換後的 index.html
+      - name: Debug after replace
+        run: |
+          echo "===== AFTER REPLACE ====="
+          grep "maps.googleapis.com/maps/api/js" index.html || echo "No Google Maps script found"
+          echo "========================="
+
+      # 部署到 GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./

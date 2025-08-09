@@ -3,23 +3,20 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - main   # 當 main 分支有推送時觸發
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 把 Repo 內容抓下來
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. 用 Secrets 裡的 MAPS_API_KEY 替換 HTML 中的佔位符
-      - name: Replace API Key
+      - name: Replace API Key in HTML
         run: |
           sed -i "s|__MAPS_API_KEY__|${{ secrets.MAPS_API_KEY }}|g" index.html
 
-      # 3. 部署到 GitHub Pages（同一個 Repo）
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:

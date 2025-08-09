@@ -19,5 +19,9 @@ jobs:
           echo "===== Before Replace ====="
           grep "maps.googleapis.com/maps/api/js" index.html || echo "No Google Maps script found"
           echo "=========================="
-
+- name: Debug secret length
+  run: |
+    echo "MAPS_API_KEY length: ${#MAPS_API_KEY}"
+  env:
+    MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
       # 替換 API Key

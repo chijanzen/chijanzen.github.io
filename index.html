@@ -383,10 +383,6 @@
                     <div class="divide-y divide-stone-200">
                         ${attractionsHtml}
                     </div>
-                    <div class="p-4">
-                        <h3 class="text-xl font-semibold text-stone-700 mb-2">當日地圖</h3>
-                        <div id="map-day-${dayData.day}" class="map-container"></div>
-                    </div>
                     <div class="p-4 bg-stone-100 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                         ${dayData.meals.breakfast ? `<div><p class="text-stone-500 text-sm">早餐</p><p class="font-semibold">🍴 ${dayData.meals.breakfast}</p></div>` : ''}
                         ${dayData.meals.lunch ? `<div><p class="text-stone-500 text-sm">午餐</p><p class="font-semibold">🍴 ${dayData.meals.lunch}</p></div>` : ''}
@@ -508,3 +504,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 </body>
 </html>
+

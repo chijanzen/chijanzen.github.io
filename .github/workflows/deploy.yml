@@ -10,13 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-- name: Debug before replace
-  run: cat index.html
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-- name: Replace API Key in HTML
-  run: |
-    sed -i "s|__MAPS_API_KEY__|${{ secrets.MAPS_API_KEY }}|g" index.html
-    cat index.html
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+      # Debug: 查看替換前的 index.html 內容
+      - name: Debug before replace
+        run: |
+          echo "===== Before Replace ====="
+          grep "maps.googleapis.com/maps/api/js" index.html || echo "No Google Maps script found"
+          echo "=========================="
+
+      # 替換 API Key

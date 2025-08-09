@@ -44,12 +44,13 @@
         .attraction-detail {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.7s ease-out, padding 0.7s ease-out;
+            transition: max-height 0.7s ease-out, padding 0.7s ease-out; /* 稍微增加過渡時間 */
             padding-top: 0;
             padding-bottom: 0;
         }
         .attraction-detail.open {
-            max-height: 5000px;
+            /* 顯著增加 max-height，確保所有內容都能完整顯示 */
+            max-height: 5000px; /* 大幅增加高度以避免內容截斷 */
             padding-top: 1rem;
             padding-bottom: 1rem;
         }
@@ -61,7 +62,7 @@
             margin-right: auto;
             height: 320px;
             max-height: 80vw;
-            min-height: 250px;
+            min-height: 250px; /* 確保圖表容器有最小高度 */
         }
         @media (min-width: 768px) {
             .chart-container {
@@ -71,26 +72,18 @@
         }
         /* Thumbnail styling */
         .attraction-thumbnail {
-            width: 128px;
-            height: 96px;
+            width: 128px; /* w-32 */
+            height: 96px; /* h-24 */
             object-fit: cover;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 1rem; /* mb-4 */
             cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .attraction-thumbnail:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        /* 地圖容器樣式 */
-        .map-container {
-            width: 100%;
-            height: 300px; /* 設定地圖高度 */
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            margin-top: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* hover:shadow-lg */
         }
     </style>
 </head>
@@ -163,178 +156,97 @@
         <p class="text-stone-500">港洲營造股份有限公司 | 2025 上蘇杭參訪</p>
     </footer>
 
-    <!-- Google Maps API -->
-    <!--
-        [ 重要！請在此處替換「YOUR_API_KEY」為您自己的 API 金鑰。]
-        如果您看到「InvalidKeyMapError」，請確認：
-        1. 您的金鑰是正確的。
-        2. 您已在 Google Cloud Console 中啟用「Maps JavaScript API」。
-        3. 您的金鑰沒有被限制在特定的 HTTP 參照位址，或已將本網站網址加入允許清單。
-    -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrUccjxL8nsUSz01QR1wlqL_3_c372xVk&callback=initMap"></script>
-    
     <script>
-        // 全行程導覽資料，已加入景點的經緯度
+        // 全行程導覽資料
         const itineraryData = [
             {
                 day: 1,
                 title: "桃園 → 上海",
                 theme: "現代與傳統的交織，初識魔都，感受百年租界風華",
                 attractions: [
-                    { name: "磁懸浮列車", detail: "✨ 必訪：搭乘世界首條商業化高速磁懸浮列車，是每位造訪上海旅人的第一站。這段僅需短短7分半鐘的旅程，從浦東機場直抵市區，最高時速可達431公里，體驗科技與速度的完美結合。<br>沿途可觀察列車無軌懸浮技術如何減震、降低噪音，也象徵著現代中國交通建設的里程碑。<br><br><b>📸 拍攝小秘訣：坐左側車窗可捕捉列車與城市剪影交會瞬間。</b><br>", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d1/A_maglev_train_coming_out%2C_Pudong_International_Airport%2C_Shanghai.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E4%B8%8A%E6%B5%B7%E7%A3%81%E6%B5%AE%E7%A4%BA%E8%8C%83%E8%BF%90%E8%90%A5%E7%BA%BF", lat: 31.1963, lng: 121.5794},
-                    { name: "外灘萬國建築博覽群",detail: "✨ 必訪：上海外灘北起外白渡橋，南抵金陵東路，全長約1.5公里。<br>特色：西側是52幢風格各異的大廈，著名中國銀行大樓、和平飯店、海關大樓、匯豐銀行大樓再現了昔日“遠東華爾街”風采，是瞭解上海歷史與建築的絕佳地點。<br>從1844年英國租界設立開始，這裡見證了上海從小漁村到國際大都市的百年滄桑。<br><b>🏛 最值得細賞的建築：</b><br>✔️遠東銀行大樓：仿古希臘式圓頂建築，曾是「遠東華爾街」的象徵，內有精緻穹頂壁畫。<br>✔️ 江海關大樓：那洪亮的鐘聲方圓幾裡可聞，不僅是船隻航標，更是上海城市節奏的象徵。<br><br>每一座建築都承載著不同時期的建築美學，從新古典主義到文藝復興式，從巴洛克到折衷主義，堪稱「萬國建築博覽群」。",mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/A_picture_from_China_every_day_101.jpg/1280px-A_picture_from_China_every_day_101.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E5%A4%96%E6%BB%A9", lat: 31.2389, lng: 121.4872},
-                    { name: "南京路步行街", detail: "✦ 精選：上海最熱鬧的商業大道，自清朝以來即為繁華地段。一路從人民廣場延伸至外灘，沿途百貨林立、霓虹閃耀。導遊建議黃昏前來，街燈初上與歷史建築交織出老上海的浪漫風情。<br>📸網美打卡點：『和平飯店外牆』與『大光明電影院』招牌前，復古味濃厚。", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/78/East_nanjing_shanghai_street_2.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E5%8D%97%E4%BA%AC%E4%B8%9C%E8%B7%AF_(%E4%B8%8A%E6%B5%B7%E5%B8%82)", lat: 31.2349, lng: 121.4789},
-                    { name: "城隍廟商圈", detail: "特色：到上海不去城隍廟，等於沒到過大上海。走進城隍廟仿佛回到100年前上海的繁華集市，這裡匯集了各種上海特色小吃和傳統商品。", mustVisit: true, imageUrl: "https://photo.settour.com.tw/900x600/https://www.settour.com.tw/ss_img/info/location/PVG/G0/PVG0000112/PVG0000112_51004.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E4%B8%8A%E6%B5%B7%E5%9F%8E%E9%9A%8D%E5%BB%9F", lat: 31.2263, lng: 121.4930},
-                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day1｜上海—外灘／豫園／城隍廟商圈<br><b>📍 小吃推薦</b><br>   ✔️ 南翔小籠湯包 & 生煎饅頭：豫園商城附近最有名，每籠一口咬下爆汁，Facebook & 小紅書評論一直破千。「你不排隊就等於沒來過上海」幾乎成了流行語 。<br>   ✔️ 街邊龍鬚糖 + 牛軋餅（老城廟商街小攤販版）：多是年輕人拍影片推薦，甜度低不膩，高交易卻塗染間布滿懷舊感。<br>   ✔️ 生煎湯包／灌湯包：城隍廟老牌店家造型正統、現做灌湯常見，皮微厚、湯汁好幾口噴出力道十足。<br>   ✔️ 排骨年糕與八寶飯等：鹹排骨配年糕甜湯，或一次套餐含八寶飯、生煎小籠湯包，是典型夜市飽食的。<br><b>🎁 伴手禮</b><br>   ✔️ 豫園特色絲巾／復古刺繡蝴蝶扇：老城隍廟商街中有幾家專做江南風禮品的店，設計感強、容易通關快速過安檢 。<br>   ✔️ 南京路步行街:上海第一食品商店的「蝴蝶酥／牛油曲奇」：微甜酥皮、香氣強烈，拍照立起來就像一对翅膀，紅盒包裝看起來很 “道地老上海” 。<br>   ✔️ 南京路步行街:青稚護手霜（外灘店），上海聯名款的青稚護手霜，自留收藏或者送人都特別棒。", mustVisit: true}
+                    { name: "磁懸浮列車", detail: "✨ 必訪：搭乘世界首條商業化高速磁懸浮列車，是每位造訪上海旅人的第一站。這段僅需短短7分半鐘的旅程，從浦東機場直抵市區，最高時速可達431公里，體驗科技與速度的完美結合。<br>沿途可觀察列車無軌懸浮技術如何減震、降低噪音，也象徵著現代中國交通建設的里程碑。<br><br><b>📸 拍攝小秘訣：坐左側車窗可捕捉列車與城市剪影交會瞬間。</b><br>", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d1/A_maglev_train_coming_out%2C_Pudong_International_Airport%2C_Shanghai.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E4%B8%8A%E6%B5%B7%E7%A3%81%E6%B5%AE%E7%A4%BA%E8%8C%83%E8%BF%90%E8%90%A5%E7%BA%BF"},
+                    { name: "外灘萬國建築博覽群",detail: "✨ 必訪：上海外灘北起外白渡橋，南抵金陵東路，全長約1.5公里。<br>特色：西側是52幢風格各異的大廈，著名中國銀行大樓、和平飯店、海關大樓、匯豐銀行大樓再現了昔日“遠東華爾街”風采，是瞭解上海歷史與建築的絕佳地點。<br>從1844年英國租界設立開始，這裡見證了上海從小漁村到國際大都市的百年滄桑。<br><b>🏛 最值得細賞的建築：</b><br>✔️遠東銀行大樓：仿古希臘式圓頂建築，曾是「遠東華爾街」的象徵，內有精緻穹頂壁畫。<br>✔️ 江海關大樓：那洪亮的鐘聲方圓幾裡可聞，不僅是船隻航標，更是上海城市節奏的象徵。<br><br>每一座建築都承載著不同時期的建築美學，從新古典主義到文藝復興式，從巴洛克到折衷主義，堪稱「萬國建築博覽群」。",mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/A_picture_from_China_every_day_101.jpg/1280px-A_picture_from_China_every_day_101.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E5%A4%96%E6%BB%A9"},
+                    { name: "南京路步行街", detail: "✦ 精選：上海最熱鬧的商業大道，自清朝以來即為繁華地段。一路從人民廣場延伸至外灘，沿途百貨林立、霓虹閃耀。導遊建議黃昏前來，街燈初上與歷史建築交織出老上海的浪漫風情。<br>📸網美打卡點：『和平飯店外牆』與『大光明電影院』招牌前，復古味濃厚。", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/78/East_nanjing_shanghai_street_2.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E5%8D%97%E4%BA%AC%E4%B8%9C%E8%B7%AF_(%E4%B8%8A%E6%B5%B7%E5%B8%82)"},
+                    { name: "城隍廟商圈", detail: "特色：到上海不去城隍廟，等於沒到過大上海。走進城隍廟仿佛回到100年前上海的繁華集市，這裡匯集了各種上海特色小吃和傳統商品。", mustVisit: true, imageUrl: "https://photo.settour.com.tw/900x600/https://www.settour.com.tw/ss_img/info/location/PVG/G0/PVG0000112/PVG0000112_51004.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E4%B8%8A%E6%B5%B7%E5%9F%8E%E9%9A%8D%E5%BB%9F"},
+                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day1｜上海—外灘／豫園／城隍廟商圈<br><b>📍 小吃推薦</b><br>   ✔️ 南翔小籠湯包 & 生煎饅頭：豫園商城附近最有名，每籠一口咬下爆汁，Facebook & 小紅書評論一直破千。「你不排隊就等於沒來過上海」幾乎成了流行語 。<br>   ✔️ 街邊龍鬚糖 + 牛軋餅（老城廟商街小攤販版）：多是年輕人拍影片推薦，甜度低不膩，高交易卻塗染間布滿懷舊感。<br>   ✔️ 生煎湯包／灌湯包：城隍廟老牌店家造型正統、現做灌湯常見，皮微厚、湯汁好幾口噴出力道十足。<br>   ✔️ 排骨年糕與八寶飯等：鹹排骨配年糕甜湯，或一次套餐含八寶飯、生煎小籠湯包，是典型夜市飽食的。<br><b>🎁 伴手禮</b><br>   ✔️ 豫園特色絲巾／復古刺繡蝴蝶扇：老城隍廟商街中有幾家專做江南風禮品的店，設計感強、容易通關快速過安檢 。<br>   ✔️ 南京路步行街:上海第一食品商店的「蝴蝶酥／牛油曲奇」：微甜酥皮、香氣強烈，拍照立起來就像一对翅膀，紅盒包裝看起來很 “道地老上海” 。<br>   ✔️ 南京路步行街:青稚護手霜（外灘店），上海聯名款的青稚護手霜，自留收藏或者送人都特別棒。", mustVisit: true}
                 ],
                 meals: { lunch: "江浙風味", dinner: "滬菜風味" },
                 hotel: "張江希爾頓酒店",
                 hotelLink: "https://www.hilton.com/zh-hant/hotels/shazjhi-hilton-shanghai-zhangjiang-science-city/",
-                },
+            },
             {
                 day: 2,
                 title: "上海",
                 theme: "古典園林與時尚新地標",
                 attractions: [
-                    { name: "豫園", detail: "✨ 必訪：擁有四百多年歷史的古典園林，雖不大，但設計精巧、環境清幽秀麗，亭台樓閣、假山、池塘樣樣俱全，是繁華大都市中心難得的一處古雅之處。特色：園內還可看到上百件出自名家手筆的匾額、碑刻，以及藏品甚多的石雕展館。<br><strong> 園林設計三大經典手法：</strong><br>🌄 借景手法：將遠山近水巧妙納入園中<br>🪟 框景藝術：透過漏窗將景色如畫框般呈現<br>🔀 對比手法：在有限空間中創造「步移景異」的效果<br><strong>    必看重點：</strong><br>⛰️ 大假山：高14米，為江南最大最古老的黃石假山，由明代假山大師張南洋設計<br>💎 玲瓏玉石：高3.3米，有72個孔洞，堪稱「鎮園之寶」<br>🏛️ 三穗堂：園中主要建築，取「吉祥如意」之意<br>", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Shanghai_-_Yu_Garden_-_0035.jpg/1920px-Shanghai_-_Yu_Garden_-_0035.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E8%B1%AB%E5%9C%92", lat: 31.2263, lng: 121.4930},
-                    { name: "新天地石庫門", detail: "特色：以上海近代建築的標誌「石庫門」建築舊區為基礎，創新地賦予其商業經營功能，把這片反映了上海歷史和文化的老房子改造成集國際水準的餐飲、購物、演藝等功能的時尚、休閒文化娛樂中心，是體驗上海新舊融合的好地方。", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/The_First_National_Congress_of_CPC.jpg/1280px-The_First_National_Congress_of_CPC.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E7%9F%B3%E5%BA%93%E9%96%80", lat: 31.2231, lng: 121.4701},
-                    { name: "船遊黃浦江", detail: "✨ 必訪：夜晚搭乘遊船，欣賞黃浦江兩岸，特別是外灘的璀璨燈光與壯麗夜景。特色：兩岸風格迥異的建築群在燈光映襯下更顯宏偉，是感受上海夜生活與城市魅力的最佳方式。", mustVisit: true, imageUrl: "https://res.klook.com/image/upload/c_fill,w_1265,h_712/q_80/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/l3229p2ezalxnyeyneng.jpg", lat: 31.2335, lng: 121.4947},
-                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day2｜豫園、新天地<br><b>📍 小吃推薦</b><br>   ✔️ 嘉嘉小籠湯包／生煎包（翡翠龍閣店／黃河路原創總店）– 最具人潮與畫面感的必吃 XLB，建議早上吃一籠配拍照，傍晚來人較少時吃生煎更香濃。<br>   ✔️ 糍飯糰＋鹹豆漿（鮮肉、芝麻餡）– 上海老早餐＋現作攤，多為在地店老闆日做，粉絲強烈要求回購。<br><b>🎁 伴手禮</b><br>   ✔️ 豫園特色絲巾／復古刺繡蝴蝶扇：老城隍廟商街中有幾家專做江南風禮品的店，設計感強、容易通關快速過安檢 。<br>   ✔️ Lay’s 上海限定「蔥油餅」「小龍蝦」風味洋芋片– 超輕包裝、飛機零負擔療癒糖心小品 。", mustVisit: true}
+                    { name: "豫園", detail: "✨ 必訪：擁有四百多年歷史的古典園林，雖不大，但設計精巧、環境清幽秀麗，亭台樓閣、假山、池塘樣樣俱全，是繁華大都市中心難得的一處古雅之處。特色：園內還可看到上百件出自名家手筆的匾額、碑刻，以及藏品甚多的石雕展館。<br><strong> 園林設計三大經典手法：</strong><br>🌄 借景手法：將遠山近水巧妙納入園中<br>🪟 框景藝術：透過漏窗將景色如畫框般呈現<br>🔀 對比手法：在有限空間中創造「步移景異」的效果<br><strong>    必看重點：</strong><br>⛰️ 大假山：高14米，為江南最大最古老的黃石假山，由明代假山大師張南洋設計<br>💎 玲瓏玉石：高3.3米，有72個孔洞，堪稱「鎮園之寶」<br>🏛️ 三穗堂：園中主要建築，取「吉祥如意」之意<br>", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Shanghai_-_Yu_Garden_-_0035.jpg/1920px-Shanghai_-_Yu_Garden_-_0035.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E8%B1%AB%E5%9B%AD"},
+                    { name: "新天地石庫門", detail: "特色：以上海近代建築的標誌「石庫門」建築舊區為基礎，創新地賦予其商業經營功能，把這片反映了上海歷史和文化的老房子改造成集國際水準的餐飲、購物、演藝等功能的時尚、休閒文化娛樂中心，是體驗上海新舊融合的好地方。", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/The_First_National_Congress_of_CPC.jpg/1280px-The_First_National_Congress_of_CPC.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E7%9F%B3%E5%BA%AB%E9%96%A8"},
+                    { name: "船遊黃浦江", detail: "✨ 必訪：夜晚搭乘遊船，欣賞黃浦江兩岸，特別是外灘的璀璨燈光與壯麗夜景。特色：兩岸風格迥異的建築群在燈光映襯下更顯宏偉，是感受上海夜生活與城市魅力的最佳方式。", mustVisit: true, imageUrl: "https://res.klook.com/image/upload/c_fill,w_1265,h_712/q_80/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/l3229p2ezalxnyeyneng.jpg"},
+                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day2｜豫園、新天地<br><b>📍 小吃推薦</b><br>   ✔️ 嘉嘉小籠湯包／生煎包（翡翠龍閣店／黃河路原創總店）– 最具人潮與畫面感的必吃 XLB，建議早上吃一籠配拍照，傍晚來人較少時吃生煎更香濃。<br>   ✔️ 糍飯糰＋鹹豆漿（鮮肉、芝麻餡）– 上海老早餐＋現作攤，多為在地店老闆日做，粉絲強烈要求回購。<br><b>🎁 伴手禮</b><br>   ✔️ 豫園特色絲巾／復古刺繡蝴蝶扇：老城隍廟商街中有幾家專做江南風禮品的店，設計感強、容易通關快速過安檢 。<br>   ✔️ Lay’s 上海限定「蔥油餅」「小龍蝦」風味洋芋片– 超輕包裝、飛機零負擔療癒糖心小品 。", mustVisit: true}
                 ],
                 meals: { breakfast: "飯店內自助餐", lunch: "本幫風味", dinner: "小火鍋風味" },
                 hotel: "張江希爾頓酒店",
-                hotelLink: "https://www.hilton.com/zh-hant/hotels/shazjhi-hilton-shanghai-zhangjiang-science-city/",
-                },
+                hotelLink: "https://www.hilton.com/zh-hant/hotels/shazjhi-hilton-shanghai-zhangjiang-science-city/"
+            },
             {
                 day: 3,
                 title: "周莊 → 蘇州",
                 theme: "水鄉古韻與詩意古剎",
                 attractions: [
-                    { name: "周莊古鎮", detail: "✨ 必訪：享有《中國第一水鄉》的美譽，被聯合國教科文組織列入世界文化遺產預備清單。<br>特色：是江南典型的“小橋、流水、人家”，雖歷經900多年的滄桑，仍完整地保存著原有的水鄉古鎮的風貌和格局，宛如一顆鑲嵌在澱山湖畔的明珠。<br>主要景點包含富安橋（俗稱鑰匙橋，橋的四個角上都有一座樓房）、雙橋（由石拱橋世德橋和石梁橋永安橋組成）、沈廳（由沈萬三後裔沈本仁建於清乾隆七年，占地2900多平方米，七進五門樓）。<br>📸網美打卡：清晨或傍晚在雙橋取景，倒影與石橋交錯成天然畫卷。", mustVisit: true, imageUrl: "https://www.tromnimedia.com/FileUploads/ArticlePhoto/20231101025501796.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E5%91%A8%E8%8E%8A%E9%95%87_(%E6%98%86%E5%B1%B1%E5%B8%82)", lat: 31.1310, lng: 120.8355},
-                    { name: "寒山寺", detail: "✨ 必訪：位於蘇州城西的楓橋鎮，因唐代詩人張繼“楓橋夜泊”詩而名揚中外。<br>特色：寺內主要建築有大雄寶殿、藏經樓、碑廊、鐘樓等，歷代名南詩文碑刻數十方，建築都甚精美，登樓眺望，黃墙綠樹，遠山近水，風景如畫。<br>寒山寺因張繼《楓橋夜泊》而名揚天下：「月落烏啼霜滿天，江楓漁火對愁眠，姑蘇城外寒山寺，夜半鐘聲到客船」<br>這座始建於南朝梁天監年間（502-509年）的古寺，原名「妙利普明塔院」，因唐代高僧寒山曾住持於此而得名。<br>寺中的鐘聲文化特別深厚，佛教認為鐘響108聲可消除人生108種煩惱，「聞鐘聲，煩惱清，智慧長，菩提生」正是其文化精髓<br>📸網美打卡：從楓橋側拍鐘樓剪影，傍晚最具詩意。", mustVisit: true, imageUrl: "https://wy-static.wenxiaobai.com/aigc-online/delogo_a4c8602b-83fe-48fa-935b-91aed12a6663.webp?ratioWH=0.75&type=opt", wikipediaLink: "https://zh.wikipedia.org/wiki/%E5%AF%92%E5%B1%B1%E5%AF%BA", lat: 31.3124, lng: 120.5648},
-                    { name: "觀前街夜市", detail: "特色：所謂的「觀前」之觀，乃為玄妙觀，是一座有著1300年歷史的恢宏道教建築群。<br>它南面正山門前的長街就是觀前街，店鋪林立，商販和百戲雜陳，擁有玄妙觀的舊日景觀，連同小公園附近的幾百家各類商店充陳其間，還有夜市的攤販，成了一個不折不扣的鬧市，是體驗蘇州夜生活的絕佳地點。", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/%E8%8B%8F%E5%B7%9E%E8%A7%82%E5%89%8D%E8%A1%97_-_panoramio.jpg/1280px-%E8%8B%8F%E5%B7%9E%E8%A7%82%E5%89%8D%E8%A1%97_-_panoramio.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E8%A7%82%E5%89%8D%E8%A1%97", lat: 31.3142, lng: 120.6212},
-                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day3｜周莊／蘇州<br><b>📍 小吃推薦</b><br>   ✔️ 周莊經典：船形粽子、麥芽塌餅、手工綠豆糕（部分夜市打卡必吃）。<br>   ✔️ 蘇州觀前街網紅小吃：黃天源糕團、乾生元麻餅、松子棗泥餅。<br><b>🎁 伴手禮</b><br>   ✔️ 正宗觀前街黃天源糕團、贈送小糯米香包裝精緻糕點。<br>   ✔️ 蘇繡刺繡小物（手帕、屏風片／掛飾）**– 前街精品平台外立式實景櫥窗常配窗花景深拍攝；極佳文創小禮兼備質感饋贈用途。", mustVisit: true}
+                    { name: "周莊古鎮", detail: "✨ 必訪：享有《中國第一水鄉》的美譽，被聯合國教科文組織列入世界文化遺產預備清單。<br>特色：是江南典型的“小橋、流水、人家”，雖歷經900多年的滄桑，仍完整地保存著原有的水鄉古鎮的風貌和格局，宛如一顆鑲嵌在澱山湖畔的明珠。<br>主要景點包含富安橋（俗稱鑰匙橋，橋的四個角上都有一座樓房）、雙橋（由石拱橋世德橋和石梁橋永安橋組成）、沈廳（由沈萬三後裔沈本仁建於清乾隆七年，占地2900多平方米，七進五門樓）。<br>📸網美打卡：清晨或傍晚在雙橋取景，倒影與石橋交錯成天然畫卷。", mustVisit: true, imageUrl: "https://www.tromnimedia.com/FileUploads/ArticlePhoto/20231101025501796.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E5%91%A8%E5%BA%84%E9%95%87_(%E6%98%86%E5%B1%B1%E5%B8%82)"},
+                    { name: "寒山寺", detail: "✨ 必訪：位於蘇州城西的楓橋鎮，因唐代詩人張繼“楓橋夜泊”詩而名揚中外。<br>特色：寺內主要建築有大雄寶殿、藏經樓、碑廊、鐘樓等，歷代名南詩文碑刻數十方，建築都甚精美，登樓眺望，黃墙綠樹，遠山近水，風景如畫。<br>寒山寺因張繼《楓橋夜泊》而名揚天下：「月落烏啼霜滿天，江楓漁火對愁眠，姑蘇城外寒山寺，夜半鐘聲到客船」<br>這座始建於南朝梁天監年間（502-509年）的古寺，原名「妙利普明塔院」，因唐代高僧寒山曾住持於此而得名。<br>寺中的鐘聲文化特別深厚，佛教認為鐘響108聲可消除人生108種煩惱，「聞鐘聲，煩惱清，智慧長，菩提生」正是其文化精髓<br>📸網美打卡：從楓橋側拍鐘樓剪影，傍晚最具詩意。", mustVisit: true, imageUrl: "https://wy-static.wenxiaobai.com/aigc-online/delogo_a4c8602b-83fe-48fa-935b-91aed12a6663.webp?ratioWH=0.75&type=opt", wikipediaLink: "https://zh.wikipedia.org/wiki/%E5%AF%92%E5%B1%B1%E5%AF%BA"},
+                    { name: "觀前街夜市", detail: "特色：所謂的「觀前」之觀，乃為玄妙觀，是一座有著1300年歷史的恢宏道教建築群。<br>它南面正山門前的長街就是觀前街，店鋪林立，商販和百戲雜陳，擁有玄妙觀的舊日景觀，連同小公園附近的幾百家各類商店充陳其間，還有夜市的攤販，成了一個不折不扣的鬧市，是體驗蘇州夜生活的絕佳地點。", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/%E8%8B%8F%E5%B7%9E%E8%A7%82%E5%89%8D%E8%A1%97_-_panoramio.jpg/1280px-%E8%8B%8F%E5%B7%9E%E8%A7%82%E5%89%8D%E8%A1%97_-_panoramio.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E8%A7%82%E5%89%8D%E8%A1%97"},
+                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day3｜周莊／蘇州<br><b>📍 小吃推薦</b><br>   ✔️ 周莊經典：船形粽子、麥芽塌餅、手工綠豆糕（部分夜市打卡必吃）。<br>   ✔️ 蘇州觀前街網紅小吃：黃天源糕團、乾生元麻餅、松子棗泥餅。<br><b>🎁 伴手禮</b><br>   ✔️ 正宗觀前街黃天源糕團、贈送小糯米香包裝精緻糕點。<br>   ✔️ 蘇繡刺繡小物（手帕、屏風片／掛飾）**– 前街精品平台外立式實景櫥窗常配窗花景深拍攝；極佳文創小禮兼備質感饋贈用途。", mustVisit: true}
                 ],
                 meals: { breakfast: "飯店內自助餐", lunch: "萬三蹄風味", dinner: "觀前街松鶴樓" },
                 hotel: "吳中希爾頓酒店",
-                hotelLink: "https://doubletree.com.cn/zh-hk/hotel/suzhou/doubletree-suzhou-wuzhong-SZVDIDI/index.html",
-               },
+                hotelLink: "https://doubletree.com.cn/zh-hk/hotel/suzhou/doubletree-suzhou-wuzhong-SZVDIDI/index.html"             
+            },
 
             {
                 day: 4,
                 title: "蘇州 → 杭州",
                 theme: "名園意境與西湖印象",
                 attractions: [
-                    { name: "拙政園", detail: "✨ 必訪：位於蘇州市的東北街，是江南園林的代表，始建於明代正德四年間，與同在蘇州的「留園」、北京的「頤和園」、承德「避暑山莊」並稱中國四大名園，也是蘇州園林中最大、最著名的一座。<br>特色：拙政園的特點是以水為主，以池水為中心，樓閣軒榭建在池的周圍，其間有漏窗、迴廊相連，與園內的山石、古木、綠竹、花卉，構成了寧靜幽雅的畫面，代表了明代園林建築風格。<br>🌿 <strong>三園各具特色：</strong><br>🏞️ 東園：明快開朗，以蘭雪堂為主，體現「獨立天地間，清風灑蘭雪」的詩意境界<br>🌊 中園：全園精華，池水佔三分之一，遠香堂、見山樓等建築臨水而築，主次分明<br>🦢 西園：以卅六鴛鴦館為主體，採用鴛鴦廳格局，拱形屋頂具有絕佳音響效果<br><br>📸拍攝攻略：『遠香堂』內部框景構圖佳，清晨光影柔和時尤為動人。", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Humble_Administrator%27s_Garden_Suzhou_November_2017_006.jpg/1024px-Humble_Administrator%27s_Garden_Suzhou_November_2017_006.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E5%AF%92%E5%B1%B1%E5%AF%BA", lat: 31.3244, lng: 120.6299},
-                    { name: "蘇州博物館", detail: "✨ 必訪：由知名建築名家貝聿銘大師所參與設計，博物館新館的設計結合了傳統的蘇州建築風格，把博物館置於院落之間，使建築物與其周圍環境相協調。<br>特色：博物館的主庭院等於是北面拙政園建築風格的延伸和現代版的詮釋，是建築愛好者不可錯過的景點。", mustVisit: true, imageUrl: "https://photo.settour.com.tw/900x600/https://www.settour.com.tw/ss_img/info/location/SZV/V0/SZV0000024/SZV0000024_1575.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E8%8B%8F%E5%B7%9E%E5%8D%9A%E7%89%A9%E9%A4%A8", lat: 31.3253, lng: 120.6247},
-                    { name: "明清河坊街", detail: "特色：自古是杭州的繁華地段。河坊街新宮橋以東，是南宋時期宋高宗寢宮——德壽宮遺址。<br>全長460米的河坊街是杭州目前保留和開發較完整的具有深厚歷史文化底蘊、市井民俗風情的歷史老街，這裡可以感受南宋的市井生活。", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/%E6%9D%AD%E5%B7%9E%E6%B8%85%E6%B2%B3%E5%9D%8A.JPG/1280px-%E6%9D%AD%E5%B7%9E%E6%B8%85%E6%B2%B3%E5%9D%8A.JPG", wikipediaLink: "https://zh.wikipedia.org/wiki/%E6%B8%85%E6%B2%B3%E5%9D%8A", lat: 30.2440, lng: 120.1670},
-                    { name: "印象西湖秀", detail: "✨ 必訪：由大導演「張藝謀」、「王潮歌」和「樊躍」的「鐵三角」導演團隊聯手打造的山水實景演出。<br>特色：張藝謀導演的《印象西湖》以真山真水為舞台，結合白蛇傳的愛情故事，運用全息投影和升降舞台技術，展現了現代科技與傳統文化的完美結合。演出分為【相遇】、【相愛】、【離別】、【追憶】、【印象】五幕，在朦朧的人工西湖雨中，重現千年愛情傳說。", mustVisit: true, imageUrl: "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/07/17/b3/6f.jpg", lat: 30.2435, lng: 120.1388},
-                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day4｜蘇州→杭州<br><b>📍 小吃推薦</b><br>   ✔️ 拙政園附近：必吃蘇式扒雞、入園前嘗蘇式麪茶或冰糖蓮子湯搭配麪茶。<br><b>🎁 伴手禮</b><br>   ✔️ 伴手禮推介：蘇州手工玲瓏玉石、錦繡園林圖案刺繡扇（館外常有藝術學生手工攤）。", mustVisit: true}
+                    { name: "拙政園", detail: "✨ 必訪：位於蘇州市的東北街，是江南園林的代表，始建於明代正德四年間，與同在蘇州的「留園」、北京的「頤和園」、承德「避暑山莊」並稱中國四大名園，也是蘇州園林中最大、最著名的一座。<br>特色：拙政園的特點是以水為主，以池水為中心，樓閣軒榭建在池的周圍，其間有漏窗、迴廊相連，與園內的山石、古木、綠竹、花卉，構成了寧靜幽雅的畫面，代表了明代園林建築風格。<br>🌿 <strong>三園各具特色：</strong><br>🏞️ 東園：明快開朗，以蘭雪堂為主，體現「獨立天地間，清風灑蘭雪」的詩意境界<br>🌊 中園：全園精華，池水佔三分之一，遠香堂、見山樓等建築臨水而築，主次分明<br>🦢 西園：以卅六鴛鴦館為主體，採用鴛鴦廳格局，拱形屋頂具有絕佳音響效果<br><br>📸拍攝攻略：『遠香堂』內部框景構圖佳，清晨光影柔和時尤為動人。", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Humble_Administrator%27s_Garden_Suzhou_November_2017_006.jpg/1024px-Humble_Administrator%27s_Garden_Suzhou_November_2017_006.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E5%AF%92%E5%B1%B1%E5%AF%BA"},
+                    { name: "蘇州博物館", detail: "✨ 必訪：由知名建築名家貝聿銘大師所參與設計，博物館新館的設計結合了傳統的蘇州建築風格，把博物館置於院落之間，使建築物與其周圍環境相協調。<br>特色：博物館的主庭院等於是北面拙政園建築風格的延伸和現代版的詮釋，是建築愛好者不可錯過的景點。", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/%E8%8B%8F%E5%B7%9E%E5%8D%9A%E7%89%A9%E9%A6%86%C2%B7%E8%8B%8F%E5%B7%9E%C2%B7%E8%A5%BF%E5%8D%97%E5%90%91%E4%B8%9C%E5%8C%97.jpg/1280px-%E8%8B%8F%E5%B7%9E%E5%8D%9A%E7%89%A9%E9%A6%86%C2%B7%E8%8B%8F%E5%B7%9E%C2%B7%E8%A5%BF%E5%8D%97%E5%90%91%E4%B8%9C%E5%8C%97.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E8%8B%8F%E5%B7%9E%E5%8D%9A%E7%89%A9%E9%A6%86"},
+                    { name: "明清河坊街", detail: "特色：自古是杭州的繁華地段。河坊街新宮橋以東，是南宋時期宋高宗寢宮——德壽宮遺址。<br>全長460米的河坊街是杭州目前保留和開發較完整的具有深厚歷史文化底蘊、市井民俗風情的歷史老街，這裡可以感受南宋的市井生活。", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/%E6%9D%AD%E5%B7%9E%E6%B8%85%E6%B2%B3%E5%9D%8A.JPG/1280px-%E6%9D%AD%E5%B7%9E%E6%B8%85%E6%B2%B3%E5%9D%8A.JPG", wikipediaLink: "https://zh.wikipedia.org/wiki/%E6%B8%85%E6%B2%B3%E5%9D%8A"},
+                    { name: "印象西湖秀", detail: "✨ 必訪：由大導演「張藝謀」、「王潮歌」和「樊躍」的「鐵三角」導演團隊聯手打造的山水實景演出。<br>特色：張藝謀導演的《印象西湖》以真山真水為舞台，結合白蛇傳的愛情故事，運用全息投影和升降舞台技術，展現了現代科技與傳統文化的完美結合。演出分為【相遇】、【相愛】、【離別】、【追憶】、【印象】五幕，在朦朧的人工西湖雨中，重現千年愛情傳說。", mustVisit: true, imageUrl: "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/07/17/b3/6f.jpg"},
+                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day4｜蘇州→杭州<br><b>📍 小吃推薦</b><br>   ✔️ 拙政園附近：必吃蘇式扒雞、入園前嘗蘇式麪茶或冰糖蓮子湯搭配麪茶。<br><b>🎁 伴手禮</b><br>   ✔️ 伴手禮推介：蘇州手工玲瓏玉石、錦繡園林圖案刺繡扇（館外常有藝術學生手工攤）。", mustVisit: true}
                 ],
                 meals: { breakfast: "飯店內自助餐", lunch: "蘇州風味", dinner: "樓外樓" },
                 hotel: "臨平溫德姆酒店",
-                hotelLink: "https://www.wyndhamhotels.com/zh-cn/wyndham/hangzhou-china/wyndham-hangzhou-linping/overview",
-             },
+                hotelLink: "https://www.wyndhamhotels.com/zh-cn/wyndham/hangzhou-china/wyndham-hangzhou-linping/overview"
+            },
             {
                 day: 5,
                 title: "杭州 → 烏鎮",
                 theme: "湖光山色與靜謐水鄉",
                 attractions: [
-                    { name: "船遊西湖", detail: "✨ 必訪：西湖為杭州最著名的景區，三面環山，層巒疊嶂，天生麗質。<br>特色：西湖的美是大自然的賜予，更是歷代先人的傑作。西湖的景致隨著四季變化而變化，都令人嘆為觀止。北宋一代大詩人蘇東坡把西湖比作美女西施，是這樣描繪西湖的美\"水光瀲灩晴方好，山色空蒙雨亦奇；欲把西湖比西子，淡妝濃抹總相宜\"。", mustVisit: true, imageUrl: "https://res.klook.com/image/upload/c_fill,w_1265,h_712/q_80/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/pxyx5rr54xzniojeeplp.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E8%A5%BF%E6%B9%96", lat: 30.2458, lng: 120.1417},
-                    { name: "花港觀魚", detail: "特色：西湖十景之一，前接柳絲蔥的蘇堤，北靠層巒疊翠的西山，碧波的小南湖和西裏湖，像兩面鑲著翡翠框架的鏡子分崁左右，是觀賞魚群和湖光山色的好地方。", imageUrl: "https://pic13.photophoto.cn/20091204/0033033940949979_b.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E8%8A%B1%E6%B8%AF%E8%A7%80%E9%B1%BC", lat: 30.2336, lng: 120.1370},
-                    { name: "雷峰塔 & 城隍閣", detail: "特色：雷峰塔因《白蛇傳》而聞名，登塔可俯瞰西湖全景；城隍閣則是一座仿古建築，同樣是俯瞰杭州市區和西湖的絕佳觀景點。兩者都是了解杭州歷史文化和欣賞美景的必訪之地。", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Leifeng_Pagoda_at_Dusk.jpg/1920px-Leifeng_Pagoda_at_Dusk.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E9%9B%B7%E5%B3%B0%E5%A1%94", lat: 30.2339, lng: 120.1450},
-                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day5｜蘇州→杭州<br><b>📍 小吃推薦</b><br>   ✔️ 西湖區最火街頭小吃：西湖糯唧唧甜糕、荷花酥、龍井茶味冰淇淋。<br>   ✔️ 夜市與茶館：胡慶餘堂桂花糕、蘭香餅、龍井茶揉茶餅供試吃拍照。<br><b>🎁 伴手禮</b><br>   ✔️ 伴手禮首選：西湖龍井茶葉（新鮮 2025 年春茶）或 手工龍井花茶罐。", mustVisit: true}
+                    { name: "船遊西湖", detail: "✨ 必訪：西湖為杭州最著名的景區，三面環山，層巒疊嶂，天生麗質。<br>特色：西湖的美是大自然的賜予，更是歷代先人的傑作。西湖的景致隨著四季變化而變化，都令人嘆為觀止。北宋一代大詩人蘇東坡把西湖比作美女西施，是這樣描繪西湖的美\"水光瀲灩晴方好，山色空蒙雨亦奇；欲把西湖比西子，淡妝濃抹總相宜\"。", mustVisit: true, imageUrl: "https://res.klook.com/image/upload/c_fill,w_1265,h_712/q_80/w_80,x_15,y_15,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/pxyx5rr54xzniojeeplp.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E8%A5%BF%E6%B9%96"},
+                    { name: "花港觀魚", detail: "特色：西湖十景之一，前接柳絲蔥的蘇堤，北靠層巒疊翠的西山，碧波的小南湖和西裏湖，像兩面鑲著翡翠框架的鏡子分崁左右，是觀賞魚群和湖光山色的好地方。", imageUrl: "https://pic13.photophoto.cn/20091204/0033033940949979_b.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E8%8A%B1%E6%B8%AF%E8%A7%82%E9%B1%BC"},
+                    { name: "雷峰塔 & 城隍閣", detail: "特色：雷峰塔因《白蛇傳》而聞名，登塔可俯瞰西湖全景；城隍閣則是一座仿古建築，同樣是俯瞰杭州市區和西湖的絕佳觀景點。兩者都是了解杭州歷史文化和欣賞美景的必訪之地。", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Leifeng_Pagoda_at_Dusk.jpg/1920px-Leifeng_Pagoda_at_Dusk.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E9%9B%B7%E5%B3%B0%E5%A1%94"},
+                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day5｜蘇州→杭州<br><b>📍 小吃推薦</b><br>   ✔️ 西湖區最火街頭小吃：西湖糯唧唧甜糕、荷花酥、龍井茶味冰淇淋。<br>   ✔️ 夜市與茶館：胡慶餘堂桂花糕、蘭香餅、龍井茶揉茶餅供試吃拍照。<br><b>🎁 伴手禮</b><br>   ✔️ 伴手禮首選：西湖龍井茶葉（新鮮 2025 年春茶）或 手工龍井花茶罐。", mustVisit: true}
                 ],
                 meals: { breakfast: "飯店內自助餐", lunch: "杭州本幫", dinner: "飯店晚餐" },
                 hotel: "通安客棧",
-                hotelLink: "https://www.hotelincn.com/123387/big5",
-                },
+                hotelLink: "https://www.hotelincn.com/123387/big5"
+            },
             {
                 day: 6,
                 title: "烏鎮 → 上海 → 桃園",
                 theme: "水鄉風情與歸途",
                 attractions: [
-                    { name: "烏鎮西柵景區", detail: "✨ 必訪：毗鄰古老的京杭大運河畔，由十二個碧水環繞的島嶼組成。<br>特色：烏鎮西柵真正呈現了原汁原味的江南水鄉古鎮的歷史風貌。景區內保存有精美的明清建築25萬平方米，橫貫景區東西的西柵老街長度達1.8公里，兩岸臨河水閣綿延1.8公里餘。內有縱橫交叉的河道近萬米，形態各異的古石橋72座，河流密度和石橋數量均為全國古鎮之最。", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/1_wuzhen_aerial_2023.jpg/1920px-1_wuzhen_aerial_2023.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E4%B9%8C%E9%95%87%E9%95%87", lat: 30.7509, lng: 120.4885},
-                    { name: "三寸金蓮館", detail: "特色：大量珍貴的實物和圖片向您講述烏鎮歷史，也是中國歷史上婦女一個畸形的追求美的歷程，如此全面、系統的展示纏足文化，在世界上也是第一家，是了解中國婦女歷史文化的重要窗口。", imageUrl: "https://dimg04.c-ctrip.com/images/0100b120009vbes7v4BFF_C_1000_500.jpg_.webp?proc=namelogo/d_5", lat: 30.7365, lng: 120.4910},
-                    { name: "老郵局", detail: "特色：烏鎮有著悠久的郵政歷史。唐朝時候的烏鎮就是一個商業非常發達的鎮，京杭大運河穿鎮而過。<br>由於烏鎮與外界頻繁的資訊交流，有更多的貿易往來，而使烏鎮的經濟更加繁榮，是感受烏鎮歷史氣息的獨特景點。", imageUrl: "https://dimg04.c-ctrip.com/images/0106m12000jvnuxr8B86B_C_1000_500.jpg_.webp?proc=namelogo/d_5", lat: 30.7509, lng: 120.4860},
-                    { name: "染坊與醬園", detail: "特色：<br>【染坊】手工環保印染晾曬大型工坊。曬布場地以青磚鋪就，豎立著密密麻麻的高杆和階梯式曬布架，規模相當龐大。草木本色染坊除了以藍草為原料漿染製作藍印花布工藝外，還有獨特的彩烤工藝流程。<br>【醬園】一走進，映入眼簾的就是滿院子青灰色的醬缸，在缸的身上我們還能清楚的看到“敘昌醬園”、“鹹豐九年”的字樣，如若是大晴天，醬缸都被揭去了竹編的大斗笠，盡情的飽吮著陽光的味道。兩者都是體驗烏鎮傳統手工藝和了解當地生活的好去處。", imageUrl: "https://ct2city.com/wp-content/uploads/20170602001117_83.jpg", lat: 30.7410, lng: 120.4852},
-                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day6｜烏鎮<br><b>📍 小吃推薦</b><br>   ✔️ 烏鎮古鎮西柵街頭：錦記糕點紫米糕、定勝糕、油煎粢飯糕。<br>   ✔️ 三味齋餅鋪：糕點陳列吸睛，拍照後迅速打包。<br><b>🎁 伴手禮</b><br>   ✔️ 帶得順：烏鎮草本香包、手工染布抱枕、鐵鏽花陶瓷杯（藤編網紅設計）。", mustVisit: true}
+                    { name: "烏鎮西柵景區", detail: "✨ 必訪：毗鄰古老的京杭大運河畔，由十二個碧水環繞的島嶼組成。<br>特色：烏鎮西柵真正呈現了原汁原味的江南水鄉古鎮的歷史風貌。景區內保存有精美的明清建築25萬平方米，橫貫景區東西的西柵老街長度達1.8公里，兩岸臨河水閣綿延1.8公里餘。內有縱橫交叉的河道近萬米，形態各異的古石橋72座，河流密度和石橋數量均為全國古鎮之最。", mustVisit: true, imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/1_wuzhen_aerial_2023.jpg/1920px-1_wuzhen_aerial_2023.jpg", wikipediaLink: "https://zh.wikipedia.org/wiki/%E4%B9%8C%E9%95%87%E9%95%87"},
+                    { name: "三寸金蓮館", detail: "特色：大量珍貴的實物和圖片向您講述烏鎮歷史，也是中國歷史上婦女一個畸形的追求美的歷程，如此全面、系統的展示纏足文化，在世界上也是第一家，是了解中國婦女歷史文化的重要窗口。", imageUrl: "https://dimg04.c-ctrip.com/images/0100b120009vbes7v4BFF_C_1000_500.jpg_.webp?proc=namelogo/d_5"},
+                    { name: "老郵局", detail: "特色：烏鎮有著悠久的郵政歷史。唐朝時候的烏鎮就是一個商業非常發達的鎮，京杭大運河穿鎮而過。<br>由於烏鎮與外界頻繁的資訊交流，有更多的貿易往來，而使烏鎮的經濟更加繁榮，是感受烏鎮歷史氣息的獨特景點。", imageUrl: "https://dimg04.c-ctrip.com/images/0106m12000jvnuxr8B86B_C_1000_500.jpg_.webp?proc=namelogo/d_5"},
+                    { name: "染坊與醬園", detail: "特色：<br>【染坊】手工環保印染晾曬大型工坊。曬布場地以青磚鋪就，豎立著密密麻麻的高杆和階梯式曬布架，規模相當龐大。草木本色染坊除了以藍草為原料漿染製作藍印花布工藝外，還有獨特的彩烤工藝流程。<br>【醬園】一走進，映入眼簾的就是滿院子青灰色的醬缸，在缸的身上我們還能清楚的看到“敘昌醬園”、“鹹豐九年”的字樣，如若是大晴天，醬缸都被揭去了竹編的大斗笠，盡情的飽吮著陽光的味道。兩者都是體驗烏鎮傳統手工藝和了解當地生活的好去處。", imageUrl: "https://ct2city.com/wp-content/uploads/20170602001117_83.jpg"},
+                    { name: "小吃推薦、伴手禮推薦", detail: "🍜 Day6｜烏鎮<br><b>📍 小吃推薦</b><br>   ✔️ 烏鎮古鎮西柵街頭：錦記糕點紫米糕、定勝糕、油煎粢飯糕。<br>   ✔️ 三味齋餅鋪：糕點陳列吸睛，拍照後迅速打包。<br><b>🎁 伴手禮</b><br>   ✔️ 帶得順：烏鎮草本香包、手工染布抱枕、鐵鏽花陶瓷杯（藤編網紅設計）。", mustVisit: true}
                 ],
                 meals: { breakfast: "飯店內自助餐", lunch: "烏鎮風味", dinner: "機上餐" },
                 hotel: "溫暖的家"
             }
         ];
-
-        // 地圖初始化函數，由 Google Maps API 回呼呼叫
-        function initMap() {
-            // 在每個行程卡片中建立地圖
-            itineraryData.forEach(dayData => {
-                createMapForDay(dayData);
-            });
-        }
-
-        // 建立並渲染單日地圖的函數
-        function createMapForDay(dayData) {
-            const mapElementId = `map-day-${dayData.day}`;
-            const mapElement = document.getElementById(mapElementId);
-            
-            if (!mapElement) {
-                console.error(`Map container with ID '${mapElementId}' not found.`);
-                return;
-            }
-
-            const attractionsWithCoords = dayData.attractions.filter(attraction => attraction.lat && attraction.lng);
-            if (attractionsWithCoords.length === 0) {
-                // 如果沒有帶座標的景點，不顯示地圖
-                mapElement.style.display = 'none';
-                // 移除標題以確保排版整潔
-                const mapTitle = mapElement.previousElementSibling;
-                if (mapTitle && mapTitle.tagName === 'H3') {
-                    mapTitle.style.display = 'none';
-                }
-                return;
-            }
-
-            // 使用第一個景點的座標作為地圖中心
-            const initialCenter = {
-                lat: attractionsWithCoords[0].lat,
-                lng: attractionsWithCoords[0].lng
-            };
-
-            // 建立地圖
-            const map = new google.maps.Map(mapElement, {
-                zoom: 12, // 預設縮放等級
-                center: initialCenter,
-                mapId: "DEMO_MAP_ID" // 可替換為您自己的地圖 ID
-            });
-
-            const infoWindow = new google.maps.InfoWindow();
-            const bounds = new google.maps.LatLngBounds();
-
-            // 為每個景點建立標記
-            attractionsWithCoords.forEach(attraction => {
-                const marker = new google.maps.Marker({
-                    position: { lat: attraction.lat, lng: attraction.lng },
-                    map,
-                    title: attraction.name
-                });
-
-                // 點擊標記時顯示 InfoWindow
-                marker.addListener("click", () => {
-                    infoWindow.setContent(`<h3>${attraction.name}</h3>`);
-                    infoWindow.open(map, marker);
-                });
-
-                // 擴展地圖邊界以包含所有標記
-                bounds.extend(marker.getPosition());
-            });
-
-            // 讓地圖自動調整縮放以包含所有標記
-            if (attractionsWithCoords.length > 1) {
-                map.fitBounds(bounds);
-            }
-        }
-
 
         document.addEventListener('DOMContentLoaded', () => {
             const navContainer = document.querySelector('#day-nav .flex');
@@ -381,29 +293,25 @@
                     <div class="divide-y divide-stone-200">
                         ${attractionsHtml}
                     </div>
-                    <div class="p-4">
-                        <h3 class="text-xl font-semibold text-stone-700 mb-2">當日地圖</h3>
-                        <div id="map-day-${dayData.day}" class="map-container"></div>
-                    </div>
                     <div class="p-4 bg-stone-100 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                         ${dayData.meals.breakfast ? `<div><p class="text-stone-500 text-sm">早餐</p><p class="font-semibold">🍴 ${dayData.meals.breakfast}</p></div>` : ''}
                         ${dayData.meals.lunch ? `<div><p class="text-stone-500 text-sm">午餐</p><p class="font-semibold">🍴 ${dayData.meals.lunch}</p></div>` : ''}
                         ${dayData.meals.dinner ? `<div><p class="text-stone-500 text-sm">晚餐</p><p class="font-semibold">🍴 ${dayData.meals.dinner}</p></div>` : ''}
                         ${dayData.hotel ? `
-                            <div>
-                                <p class="text-stone-500 text-sm">住宿</p>
-                                <p class="font-semibold">
-                                    🏨 ${dayData.hotelLink
-                                        ? `<a href="${dayData.hotelLink}" target="_blank" class="text-blue-600 hover:underline">${dayData.hotel}</a>`
-                                        : dayData.hotel}
-                                </p>
-                                ${dayData.hotelWikipediaLink ? `
-                                    <p class="text-sm mt-1">
-                                        <a href="${dayData.hotelWikipediaLink}" target="_blank" class="text-blue-500 hover:underline">維基百科</a>
-                                    </p>
-                                ` : ''}
-                            </div>` : ''
-                        }
+    <div>
+    <p class="text-stone-500 text-sm">住宿</p>
+    <p class="font-semibold">
+        🏨 ${dayData.hotelLink
+            ? `<a href="${dayData.hotelLink}" target="_blank" class="text-blue-600 hover:underline">${dayData.hotel}</a>`
+            : dayData.hotel}
+    </p>
+    ${dayData.hotelWikipediaLink ? `
+        <p class="text-sm mt-1">
+            <a href="${dayData.hotelWikipediaLink}" target="_blank" class="text-blue-500 hover:underline">維基百科</a>
+        </p>
+    ` : ''}
+    </div>` : ''
+}
                     </div>
                 `;
                 contentContainer.appendChild(dayCard);
@@ -424,7 +332,6 @@
                     const detail = title.nextElementSibling;
                     const icon = title.querySelector('span');
                     detail.classList.toggle('open');
-                    // 已修正：移除多餘的單引號，避免 SyntaxError
                     icon.style.transform = detail.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
                 }
             });
@@ -455,9 +362,9 @@
                         label: '行程分佈 (天)',
                         data: [2, 1.5, 2.5], // 總共 6 天
                         backgroundColor: [
-                            'rgba(15, 118, 110, 0.8)',
-                            'rgba(17, 138, 126, 0.8)',
-                            'rgba(20, 184, 166, 0.8)'
+                            'rgba(15, 118, 110, 0.8)', // teal-800
+                            'rgba(17, 138, 126, 0.8)', // teal-700
+                            'rgba(20, 184, 166, 0.8)'  // teal-500
                         ],
                         borderColor: [
                             '#ffffff',
@@ -500,6 +407,24 @@
                     cutout: '60%'
                 }
             });
+
+            // 新增：Service Worker 註冊
+            // 在 Canvas 環境中，Service Worker 的註冊路徑可能無法正確解析，
+            // 導致 'Service Worker registration failed: Error: /service-worker.js is not a valid URL.' 錯誤。
+            // 因此，將其註解掉以避免錯誤。
+            /*
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js')
+                        .then(registration => {
+                            console.log('Service Worker registered with scope:', registration.scope);
+                        })
+                        .catch(error => {
+                            console.error('Service Worker registration failed:', error);
+                        });
+                });
+            }
+            */
         });
     </script>
     <!-- Lightbox2 JS -->
